@@ -1,0 +1,4 @@
+; lib.def : µ¼³öDLLº¯Êý
+LIBRARY Dllmain
+EXPORTS
+	Add @ 1 
