@@ -29,8 +29,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -191,6 +191,7 @@
     <ClInclude Include="ServerMainDlg.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TrueColorToolBar.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ServerMain.cpp" />
@@ -201,6 +202,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TrueColorToolBar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ServerMain.rc" />
@@ -209,6 +211,9 @@
     <None Include="res\ServerMain.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\2010051907485110.bmp" />
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\bitmap2.bmp" />
     <Image Include="res\ServerMain.ico" />
     <Image Include="res\toolbar1.bmp" />
   </ItemGroup>

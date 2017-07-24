@@ -16,6 +16,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ToolBarEx">
+      <UniqueIdentifier>{6db554e4-1445-4059-800e-9546f33ef356}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -36,6 +39,9 @@
     <ClInclude Include="Resource.h">
       <Filter>MainDlg\头文件</Filter>
     </ClInclude>
+    <ClInclude Include="TrueColorToolBar.h">
+      <Filter>ToolBarEx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ServerMain.cpp">
@@ -46,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>MainDlg\源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TrueColorToolBar.cpp">
+      <Filter>ToolBarEx</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -63,6 +72,15 @@
       <Filter>MainDlg\资源文件</Filter>
     </Image>
     <Image Include="res\toolbar1.bmp">
+      <Filter>MainDlg\资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap1.bmp">
+      <Filter>MainDlg\资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap2.bmp">
+      <Filter>MainDlg\资源文件</Filter>
+    </Image>
+    <Image Include="res\2010051907485110.bmp">
       <Filter>MainDlg\资源文件</Filter>
     </Image>
   </ItemGroup>

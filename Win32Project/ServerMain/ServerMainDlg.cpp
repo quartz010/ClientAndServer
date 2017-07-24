@@ -45,6 +45,9 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 	ON_BN_CLICKED(IDOK, &CAboutDlg::OnBnClickedOk)
+
+
+
 END_MESSAGE_MAP()
 
 
@@ -68,8 +71,27 @@ BEGIN_MESSAGE_MAP(CServerMainDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDOK, &CServerMainDlg::OnBnClickedOk)
+
+	//比如这里映射了个函数
 	ON_COMMAND(ID_32771, &CServerMainDlg::On32771)
-	ON_COMMAND(ID_32772, &CServerMainDlg::On32772)
+	//相当于连接信号和槽 (命令消息映射宏)
+	ON_COMMAND(IDM_ONLINE_CMD, &CServerMainDlg::OnOnlineCmd)
+	ON_COMMAND(IDM_ONLINE_PS, &CServerMainDlg::OnOnlineProcess)
+	ON_COMMAND(IDM_ONLINE_WIN, &CServerMainDlg::OnOnlineWindow)
+	ON_COMMAND(IDM_ONLINE_DESKTOP, &CServerMainDlg::OnOnlineDesktop)
+	ON_COMMAND(IDM_ONLINE_FILE, &CServerMainDlg::OnOnlineFile)
+	ON_COMMAND(IDM_ONLINE_VOICE, &CServerMainDlg::OnOnlineAudio)
+	ON_COMMAND(IDM_ONLINE_VIDEO, &CServerMainDlg::OnOnlineVideo)
+	ON_COMMAND(IDM_ONLINE_SERVER, &CServerMainDlg::OnOnlineServer)
+	ON_COMMAND(IDM_ONLINE_REG, &CServerMainDlg::OnOnlineRegister)
+	//	ON_COMMAND(IDM_ONLINE_DELETE, &CRemoteDlg::OnOnlineDelete)
+	//	ON_COMMAND(IDM_MAIN_CLOSE, &CRemoteDlg::OnMainClose)
+
+	//可以把不同的东西写成同一个ID这样两个效果对应同一个映射
+	ON_COMMAND(IDM_MAIN_ABOUT, &CServerMainDlg::OnMainAbout)
+	ON_COMMAND(IDM_MAIN_SET, &CServerMainDlg::OnMainSet)
+	ON_COMMAND(IDM_MAIN_GEN, &CServerMainDlg::OnMainBuild)
+	//	ON_COMMAND(IDM_MAIN_CLOSE, &CServerMainDlg::OnMainClose)
 END_MESSAGE_MAP()
 
 
@@ -103,10 +125,59 @@ BOOL CServerMainDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
+	
+	//以上为系统生成代码
 
 	// TODO: 在此添加额外的初始化代码
+	
+	CreateToolBar();               //添加工具条
+
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
+}
+
+//初始化工具条
+void CServerMainDlg::CreateToolBar(void)
+{
+
+	if (!mToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
+		| CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
+		!mToolBar.LoadToolBar(IDR_TOOLBAR_MAIN))  //创建一个工具条  加载资源
+	{
+
+		return;
+	}
+	mToolBar.ModifyStyle(0, TBSTYLE_FLAT);    //Fix for WinXP
+	mToolBar.LoadTrueColorToolBar
+	(
+		54,    //加载真彩工具条
+		IDB_BITMAP_MAIN,
+		IDB_BITMAP_MAIN,
+		IDB_BITMAP_MAIN
+	);  //和我们的位图资源相关联
+	RECT rt, rtMain;
+	GetWindowRect(&rtMain);   //得到整个窗口的大小
+	rt.left = 0;
+	rt.top = 0;
+	rt.bottom = 80;
+	rt.right = rtMain.right - rtMain.left + 10;
+	mToolBar.MoveWindow(&rt, TRUE);
+
+	mToolBar.SetButtonText(0, "终端管理");     //在位图的下面添加文字
+	mToolBar.SetButtonText(1, "进程管理");
+	mToolBar.SetButtonText(2, "窗口管理");
+	mToolBar.SetButtonText(3, "桌面管理");
+	mToolBar.SetButtonText(4, "文件管理");
+	mToolBar.SetButtonText(5, "语音管理");
+	mToolBar.SetButtonText(6, "视频管理");
+	mToolBar.SetButtonText(7, "服务管理");
+	mToolBar.SetButtonText(8, "注册表管理");
+	mToolBar.SetButtonText(9, "参数设置");
+	mToolBar.SetButtonText(10, "生成服务端");
+	mToolBar.SetButtonText(11, "帮助");
+
+	RepositionBars(AFX_IDW_CONTROLBAR_FIRST, AFX_IDW_CONTROLBAR_LAST, 0);  //显示
+
 }
 
 void CServerMainDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -174,16 +245,121 @@ void CServerMainDlg::OnBnClickedOk()
 }
 
 
-void CServerMainDlg::On32771() //菜单栏退出
-{
-	CDialogEx::OnOK();
+
+
+void CServerMainDlg::On32771() //菜单关于
+{	
+	CDialogEx::OnOK();	
 	// TODO: 在此添加命令处理程序代码
 }
 
+void CServerMainDlg::OnOnlineCmd()
+{
+}
 
-void CServerMainDlg::On32772() //菜单关于
-{	
-	CAboutDlg mAbuot;
-	mAbuot.DoModal();
-	// TODO: 在此添加命令处理程序代码
+void CServerMainDlg::OnOnlineProcess()
+{
+}
+
+void CServerMainDlg::OnOnlineWindow()
+{
+}
+
+void CServerMainDlg::OnOnlineDesktop()
+{
+}
+
+void CServerMainDlg::OnOnlineFile()
+{
+}
+
+void CServerMainDlg::OnOnlineAudio()
+{
+}
+
+void CServerMainDlg::OnOnlineVideo()
+{
+}
+
+void CServerMainDlg::OnOnlineServer()
+{
+}
+
+void CServerMainDlg::OnOnlineRegister()
+{
+}
+
+void CServerMainDlg::OnOnlineDelete()
+{
+}
+
+void CServerMainDlg::OnMainClose()
+{
+}
+
+void CServerMainDlg::OnMainAbout()
+{
+	CAboutDlg dlgAbout;
+	dlgAbout.DoModal();
+}
+
+void CServerMainDlg::OnMainSet()
+{
+}
+
+void CServerMainDlg::OnMainBuild()
+{
+}
+
+void CServerMainDlg::OnOnlineRegedit()
+{
+}
+
+LRESULT CServerMainDlg::OnOpenRegEditDialog(WPARAM, LPARAM)
+{
+	return LRESULT();
+}
+
+LRESULT CServerMainDlg::OnOpenWebCamDialog(WPARAM, LPARAM)
+{
+	return LRESULT();
+}
+
+void CServerMainDlg::OnIconNotify(WPARAM wParam, LPARAM lParam)
+{
+}
+
+LRESULT CServerMainDlg::OnOpenShellDialog(WPARAM, LPARAM)
+{
+	return LRESULT();
+}
+
+LRESULT CServerMainDlg::OnOpenSystemDialog(WPARAM, LPARAM)
+{
+	return LRESULT();
+}
+
+LRESULT CServerMainDlg::OnOpenManagerDialog(WPARAM, LPARAM)
+{
+	return LRESULT();
+}
+
+LRESULT CServerMainDlg::OnOpenAudioDialog(WPARAM, LPARAM)
+{
+	return LRESULT();
+}
+
+LRESULT CServerMainDlg::OnOpenScreenSpyDialog(WPARAM, LPARAM)
+{
+	return LRESULT();
+}
+
+LRESULT CServerMainDlg::OnOpenServerDialog(WPARAM, LPARAM)
+{
+	return LRESULT();
+}
+
+LRESULT CServerMainDlg::OnAddToList(WPARAM, LPARAM)
+{
+	return LRESULT();
 }
